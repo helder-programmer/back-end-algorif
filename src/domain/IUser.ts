@@ -1,4 +1,4 @@
-import {Prisma} from '@prisma/client';
+import { Prisma } from '@prisma/client';
 export interface IUser {
     user_id: string;
     name: string;
