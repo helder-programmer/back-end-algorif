@@ -10,18 +10,120 @@ datasource db {
     url      = env("DB_TEST_URL")
 }
 
+enum Difficulty {
+    BEGINNER
+    EASY
+    MEDIUM
+    HARD
+    EXPERT
+}
+
+// tb_users
 model User {
-    userId    String   @id @default(uuid()) @map("user_id")
-    name      String
-    email     String   @unique
+    userId    String        @id @default(uuid()) @map("user_id")
+    name      String // Se tem 'groupName', 'topicName', então por quê aqui não é 'userName'?
+    email     String        @unique
     password  String
     state     String?
     city      String?
     phone     String?
-    score     Decimal
+    score     Decimal       @default(0)
     teacher   Boolean
+    group     QuestionGroup @relation(fields: [groupId_], references: [groupId])
+    createdAt DateTime      @default(now()) @map("created_at")
+    updatedAt DateTime      @updatedAt @map("updated_at")
+
+    submissions_       Submission[]
+    created_questions_ Question[]
+    groupId_           Int
+
+    @@map("tb_users")
+}
+
+// Antes era tb_groups
+model QuestionGroup {
+    groupId   Int      @id @default(autoincrement()) @map("group_id")
+    groupName String // Por quê não só 'name'?
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
-    @@map("tb_users")
+    questions_ Question[]
+    users_     User[]
+
+    @@map("tb_question_groups")
+}
+
+// Antes era tb_categories
+model QuestionTopic {
+    topicId   Int      @id @default(autoincrement()) @map("topic_id")
+    topicName String // Por quê não só 'name'?
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    questions_ Question[]
+
+    @@map("tb_question_topics")
+}
+
+// Antes era tb_tests
+model QuestionTest {
+    testId    Int      @id @default(autoincrement()) @map("test_id")
+    input     String
+    output    String
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+
+    questions_ Question[]
+
+    @@map("tb_question_tests")
+}
+
+// Antes era tb_difficulties
+model QuestionDifficulty {
+    difficultyId   Int        @id @default(autoincrement()) @map("difficulty_id")
+    difficultyName Difficulty
+    createdAt      DateTime   @default(now()) @map("created_at")
+    updatedAt      DateTime   @updatedAt @map("updated_at")
+
+    question_ Question?
+
+    @@map("tb_question_difficulties")
+}
+
+// tb_questions
+model Question {
+    questionId          Int                @id @default(autoincrement()) @map("question_id")
+    title               String             @unique
+    description         String?
+    detailedDescription String
+    code                String
+    test                QuestionTest       @relation(fields: [testId_], references: [testId])
+    group               QuestionGroup      @relation(fields: [groupId_], references: [groupId])
+    topic               QuestionTopic      @relation(fields: [topicId_], references: [topicId])
+    userCreator         User               @relation(fields: [userCreatorId_], references: [userId])
+    difficulty          QuestionDifficulty @relation(fields: [difficultyId_], references: [difficultyId])
+    createdAt           DateTime           @default(now()) @map("created_at")
+    updatedAt           DateTime           @updatedAt @map("updated_at")
+
+    groupId_       Int
+    testId_        Int
+    topicId_       Int           @unique
+    difficultyId_  Int           @unique
+    userCreatorId_ String        @unique
+    submissions_   Submission[]
+
+    @@map("tb_questions")
+}
+
+// tb_submission
+model Submission {
+    user      User     @relation(fields: [userId_], references: [userId])
+    question  Question @relation(fields: [questionId_], references: [questionId])
+    createdAt DateTime @default(now()) @map("created_at")
+
+    userId_     String
+    questionId_ Int
+
+    @@id([userId_, questionId_])
+    @@map("tb_submissions")
 }
