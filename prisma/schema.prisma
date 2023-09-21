@@ -7,21 +7,21 @@ generator client {
 
 datasource db {
     provider = "mysql"
-    url      = env("DATABASE_URL")
+    url      = env("DB_TEST_URL")
 }
 
 model User {
-    user_id    String   @id @default(uuid())
-    name       String
-    email      String
-    password   String
-    state      String?
-    city       String?
-    phone      String?
-    score      Decimal 
-    teacher    Boolean
-    created_at DateTime @default(now())
-    updated_at DateTime @updatedAt
+    userId    String   @id @default(uuid()) @map("user_id")
+    name      String
+    email     String   @unique
+    password  String
+    state     String?
+    city      String?
+    phone     String?
+    score     Decimal
+    teacher   Boolean
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
 
     @@map("tb_users")
 }
