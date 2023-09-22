@@ -1,7 +1,13 @@
 import request from 'supertest';
 import App from '../../app';
+import { truncateDatabase } from '../utils/truncate';
+
 
 describe('Auth Tests', () => {
+    beforeAll(async () => {
+        await truncateDatabase();
+    });
+
     it('should create user in database', async () => {
         const response = await request(App)
             .post('/users/register')
@@ -9,7 +15,7 @@ describe('Auth Tests', () => {
                 name: 'nicollas',
                 email: 'nicollashelder@gmail.com',
                 password: '12345',
-                teacher: false
+                isTeacher: false
             });
 
         expect(response.status).toBe(200);
@@ -19,7 +25,7 @@ describe('Auth Tests', () => {
     it('should return user data and token', async () => {
         const response = await request(App).post('/users/login').send({
             email: 'nicollashelder@gmail.com',
-            password: '123456'
+            password: '12345'
         });
 
         expect(response.status).toBe(200);
@@ -28,7 +34,7 @@ describe('Auth Tests', () => {
     it('should return unauthorized with invalid data', async () => {
         const response = await request(App).post('/users/login').send({
             email: 'nicollashelder@gmail.com',
-            password: '12345'
+            password: '123456'
         });
 
         expect(response.status).toBe(401);

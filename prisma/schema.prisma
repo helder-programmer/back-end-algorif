@@ -18,45 +18,43 @@ enum Difficulty {
     EXPERT
 }
 
-// tb_users
 model User {
-    userId    String        @id @default(uuid()) @map("user_id")
+    userId    String   @id @default(uuid()) @map("user_id")
     name      String // Se tem 'groupName', 'topicName', então por quê aqui não é 'userName'?
-    email     String        @unique
+    email     String   @unique
     password  String
     state     String?
     city      String?
     phone     String?
-    score     Decimal       @default(0)
-    teacher   Boolean
-    group     QuestionGroup @relation(fields: [groupId_], references: [groupId])
-    createdAt DateTime      @default(now()) @map("created_at")
-    updatedAt DateTime      @updatedAt @map("updated_at")
+    score     Decimal  @default(0)
+    isTeacher Boolean  @default(false) @map("is_teacher")
+    createdAt DateTime @default(now()) @map("created_at")
+    updatedAt DateTime @updatedAt @map("updated_at")
+    classId_  String?
+
+    class Class? @relation(fields: [classId_], references: [classId])
 
     submissions_       Submission[]
     created_questions_ Question[]
-    groupId_           Int
 
     @@map("tb_users")
 }
 
-// Antes era tb_groups
-model QuestionGroup {
-    groupId   Int      @id @default(autoincrement()) @map("group_id")
-    groupName String // Por quê não só 'name'?
+model Class {
+    classId   String   @id @default(uuid()) @map("class_id")
+    name      String // Por quê não só 'name'?
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
     questions_ Question[]
     users_     User[]
 
-    @@map("tb_question_groups")
+    @@map("tb_classes")
 }
 
-// Antes era tb_categories
 model QuestionTopic {
-    topicId   Int      @id @default(autoincrement()) @map("topic_id")
-    topicName String // Por quê não só 'name'?
+    topicId   String   @id @default(uuid()) @map("topic_id")
+    name      String // Por quê não só 'name'?
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -65,65 +63,70 @@ model QuestionTopic {
     @@map("tb_question_topics")
 }
 
-// Antes era tb_tests
 model QuestionTest {
-    testId    Int      @id @default(autoincrement()) @map("test_id")
-    input     String
-    output    String
-    createdAt DateTime @default(now()) @map("created_at")
-    updatedAt DateTime @updatedAt @map("updated_at")
+    testId      String   @id @default(uuid()) @map("test_id")
+    input       String
+    output      String
+    createdAt   DateTime @default(now()) @map("created_at")
+    updatedAt   DateTime @updatedAt @map("updated_at")
+    questionId_ String   @map("question_id")
 
-    questions_ Question[]
+    Question Question @relation(fields: [questionId_], references: [questionId])
 
     @@map("tb_question_tests")
 }
 
-// Antes era tb_difficulties
 model QuestionDifficulty {
-    difficultyId   Int        @id @default(autoincrement()) @map("difficulty_id")
-    difficultyName Difficulty
+    difficultyId   String     @id @default(uuid()) @map("difficulty_id")
+    difficultyName Difficulty @map("difficulty_name")
     createdAt      DateTime   @default(now()) @map("created_at")
     updatedAt      DateTime   @updatedAt @map("updated_at")
 
-    question_ Question?
+    questions Question[]
 
     @@map("tb_question_difficulties")
 }
 
-// tb_questions
 model Question {
-    questionId          Int                @id @default(autoincrement()) @map("question_id")
-    title               String             @unique
+    questionId          String   @id @default(uuid()) @map("question_id")
+    title               String   @unique
     description         String?
-    detailedDescription String
+    detailedDescription String   @map("detailed_description")
     code                String
-    test                QuestionTest       @relation(fields: [testId_], references: [testId])
-    group               QuestionGroup      @relation(fields: [groupId_], references: [groupId])
-    topic               QuestionTopic      @relation(fields: [topicId_], references: [topicId])
-    userCreator         User               @relation(fields: [userCreatorId_], references: [userId])
-    difficulty          QuestionDifficulty @relation(fields: [difficultyId_], references: [difficultyId])
-    createdAt           DateTime           @default(now()) @map("created_at")
-    updatedAt           DateTime           @updatedAt @map("updated_at")
+    createdAt           DateTime @default(now()) @map("created_at")
+    updatedAt           DateTime @updatedAt @map("updated_at")
+    classId_            String?  @map("class_id")
+    topicId_            String   @map("topic_id")
+    difficultyId_       String   @map("difficulty_id")
+    userCreatorId_      String   @map("user_creator_id")
 
-    groupId_       Int
-    testId_        Int
-    topicId_       Int           @unique
-    difficultyId_  Int           @unique
-    userCreatorId_ String        @unique
-    submissions_   Submission[]
+    class       Class?             @relation(fields: [classId_], references: [classId])
+    topic       QuestionTopic      @relation(fields: [topicId_], references: [topicId])
+    userCreator User               @relation(fields: [userCreatorId_], references: [userId])
+    difficulty  QuestionDifficulty @relation(fields: [difficultyId_], references: [difficultyId])
+
+    submissions_ Submission[]
+    tests_       QuestionTest[]
 
     @@map("tb_questions")
 }
 
-// tb_submission
 model Submission {
-    user      User     @relation(fields: [userId_], references: [userId])
-    question  Question @relation(fields: [questionId_], references: [questionId])
-    createdAt DateTime @default(now()) @map("created_at")
+    userId_       String
+    questionId_   String
+    code          String
+    isCorrectCode Boolean  @map("is_correct_code")
+    createdAt     DateTime @default(now()) @map("created_at")
 
-    userId_     String
-    questionId_ Int
+    user     User     @relation(fields: [userId_], references: [userId], onDelete: Cascade)
+    question Question @relation(fields: [questionId_], references: [questionId])
 
     @@id([userId_, questionId_])
     @@map("tb_submissions")
 }
+
+// 22/09/2023 --> Formatação de colunas para snake_case
+// 22/09/2023 -> User com OnDelete Cascade para Submissions
+// 22/09/2023 --> Adicionando coluna "Code" na model Submission
+// 22/09/2023 --> Adicionando prefixo "IS_" antes de campos booleanos
+// 22/09/2023 --> Campo IS_TEACHER com default(false) na model User

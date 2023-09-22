@@ -7,8 +7,10 @@ export interface IUser {
     state: string | null;
     city: string | null;
     phone: string | null;
-    score: Prisma.Decimal;
-    teacher: boolean;
+    score: Prisma.Decimal | number;
+    isTeacher: boolean;
     created_at: Date;
     updated_at: Date;
+    
+    
 }
