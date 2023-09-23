@@ -5,5 +5,5 @@ export interface ICreateUserDTO {
     state?: string;
     city?: string;
     phone?: string;
-    teacher: boolean;
+    isTeacher: boolean;
 }

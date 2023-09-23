@@ -20,7 +20,7 @@ enum Difficulty {
 
 model User {
     userId    String   @id @default(uuid()) @map("user_id")
-    name      String // Se tem 'groupName', 'topicName', então por quê aqui não é 'userName'?
+    name      String
     email     String   @unique
     password  String
     state     String?
@@ -54,7 +54,7 @@ model Class {
 
 model QuestionTopic {
     topicId   String   @id @default(uuid()) @map("topic_id")
-    name      String // Por quê não só 'name'?
+    name      String
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -71,7 +71,7 @@ model QuestionTest {
     updatedAt   DateTime @updatedAt @map("updated_at")
     questionId_ String   @map("question_id")
 
-    Question Question @relation(fields: [questionId_], references: [questionId])
+    question Question @relation(fields: [questionId_], references: [questionId])
 
     @@map("tb_question_tests")
 }
@@ -124,9 +124,3 @@ model Submission {
     @@id([userId_, questionId_])
     @@map("tb_submissions")
 }
-
-// 22/09/2023 --> Formatação de colunas para snake_case
-// 22/09/2023 -> User com OnDelete Cascade para Submissions
-// 22/09/2023 --> Adicionando coluna "Code" na model Submission
-// 22/09/2023 --> Adicionando prefixo "IS_" antes de campos booleanos
-// 22/09/2023 --> Campo IS_TEACHER com default(false) na model User
