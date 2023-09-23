@@ -4,7 +4,7 @@ import dotEnv from 'dotenv';
 
 import { Request, Response } from "express";
 import { IUserRepository } from "../repositories/types/IUserRepository";
-import { NotFoundError, UnauthorizedError } from "../utils/errors";
+import { UnauthorizedError } from "../utils/errors";
 dotEnv.config();
 
 const secretKey = process.env.TOKEN_SECRET_KEY;
@@ -18,7 +18,7 @@ export class UserController {
 
 
     async register(req: Request, res: Response) {
-        const { email, name, password, teacher, city, phone, state } = req.body;
+        const { email, name, password, isTeacher, city, phone, state } = req.body;
         const hashedPassword = await bcrypt.hash(password, 8);
 
 
@@ -26,7 +26,7 @@ export class UserController {
             name,
             email,
             password: hashedPassword,
-            teacher,
+            isTeacher,
             city,
             phone,
             state
@@ -49,7 +49,7 @@ export class UserController {
         if (!isCorrectPassword) throw new UnauthorizedError('Invalid e-mail or password!');
 
         const token = jwt.sign(
-            { user_id: user.user_id },
+            { userId: user.userId },
             secretKey!,
             { expiresIn: '1h' }
         );

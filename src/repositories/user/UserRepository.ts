@@ -4,6 +4,7 @@ import { IUserRepository } from "../types/IUserRepository";
 import { ICreateUserDTO } from "./dtos/ICreateUserDTO";
 import { prismaClient } from "../../database";
 import { IFindByEmailDTO } from './dtos/IFindByEmail';
+import { IFindByIdDTO } from './dtos/IFindByIdDTO';
 
 export class UserRepository implements IUserRepository {
 
@@ -26,11 +27,17 @@ export class UserRepository implements IUserRepository {
     }
 
     async findByEmail({ email }: IFindByEmailDTO) {
-    
+
         const user = await prismaClient.user.findFirst({
             where: { email },
         });
 
+        return user;
+    }
+
+
+    async findById({ userId }: IFindByIdDTO) {
+        const user = await prismaClient.user.findFirst({ where: { userId } });
         return user;
     }
 }
