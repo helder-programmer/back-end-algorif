@@ -17,7 +17,7 @@ export class UserController {
     }
 
 
-    async register(req: Request, res: Response) {
+    public async register(req: Request, res: Response) {
         const { email, name, password, isTeacher, city, phone, state } = req.body;
         const hashedPassword = await bcrypt.hash(password, 8);
 
@@ -37,7 +37,7 @@ export class UserController {
 
 
 
-    async login(req: Request, res: Response) {
+    public async login(req: Request, res: Response) {
         const { email, password } = req.body;
 
         const user = await this.repository.findByEmail({ email });
@@ -55,5 +55,11 @@ export class UserController {
         );
 
         return res.status(200).json({ user, token });
+    }
+
+
+
+    public async recoverUserInformations(req: Request, res: Response) {
+        return res.status(200).json(req.user);
     }
 }
