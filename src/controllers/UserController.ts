@@ -1,13 +1,10 @@
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import dotEnv from 'dotenv';
 
 import { Request, Response } from "express";
 import { IUserRepository } from "../repositories/types/IUserRepository";
 import { UnauthorizedError } from "../utils/errors";
-dotEnv.config();
-
-const secretKey = process.env.TOKEN_SECRET_KEY;
+import { generateToken } from '../utils/generateToken';
 
 export class UserController {
     constructor(
@@ -48,11 +45,7 @@ export class UserController {
 
         if (!isCorrectPassword) throw new UnauthorizedError('Invalid e-mail or password!');
 
-        const token = jwt.sign(
-            { userId: user.userId },
-            secretKey!,
-            { expiresIn: '1h' }
-        );
+        const token = generateToken(user);
 
         return res.status(200).json({ user, token });
     }

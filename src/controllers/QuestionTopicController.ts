@@ -20,4 +20,15 @@ export class QuestionTopicController {
     }
 
 
+    public async update(req: Request, res: Response) {
+        const { name } = req.body;
+        const { topicId } = req.params;
+
+
+        const topic = await this.repository.update({ topicId, name });
+
+        return res.status(200).json(topic);
+    }
+
+
 }

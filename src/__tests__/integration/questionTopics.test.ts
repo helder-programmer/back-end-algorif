@@ -1,23 +1,47 @@
 import request from 'supertest';
-
-import { login } from '../utils/login';
 import { truncateDatabase } from '../utils/truncate';
+import { UserFactory } from '../utils/factories';
 import App from '../../app';
+import { generateToken } from '../../utils/generateToken';
+import { prismaClient } from '../../database';
 
 
 describe('Question Topics', () => {
     beforeAll(async () => {
         await truncateDatabase();
-    })
+    });
 
     it('should create and return a new question topic', async () => {
-        const token = await login();
+        const user = await UserFactory.create();
+
+        const token = generateToken(user);
 
         const response = await request(App)
             .post('/questionTopics')
             .send({ name: 'INICIANTE' })
-            .set('authorization', token)
+            .set('authorization', token);
 
-        expect(response.statusCode).toBe(200);
+        expect(response.status).toBe(200);
+    });
+
+
+    it('should update and return the question topic', async () => {
+        const user = await UserFactory.create();
+
+        const token = generateToken(user);
+
+        const topic = await prismaClient.questionTopic.create({
+            data: {
+                name: 'Math'
+            }
+        })
+
+        const response = await request(App)
+            .put(`/questionTopics/${topic.topicId}`)
+            .send({ name: 'Array' })
+            .set('authorization', token);
+
+
+        expect(response.body).toHaveProperty('topicId');
     });
 });

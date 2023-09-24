@@ -23,6 +23,4 @@ export async function truncateDatabase() {
     await prismaClient.$executeRaw`TRUNCATE TABLE tb_questions;`;
 
     await prismaClient.$executeRaw`SET FOREIGN_KEY_CHECKS=1;`;
-
-    console.log('Tabelas truncadas');
 }

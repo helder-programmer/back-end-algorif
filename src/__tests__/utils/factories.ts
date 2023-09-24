@@ -1,4 +1,5 @@
 import { prismaClient } from "../../database";
+import bcrypt from 'bcrypt';
 
 export class UserFactory {
     public static async create(name?: string, email?: string, password?: string) {
@@ -6,7 +7,7 @@ export class UserFactory {
             data: {
                 name: name ?? 'nicollas',
                 email: email ?? 'nicollashelder@gmail.com',
-                password: password ?? '12345'
+                password: await bcrypt.hash(password ?? '12345', 8)
             }
         });
 
