@@ -9,7 +9,9 @@ const controller = new QuestionTopicController(repository);
 
 
 router.post('/', authMiddleware, (req, res) => controller.create(req, res));
-router.put('/topicId', authMiddleware, (req, res) => controller.update(req, res));
+router.put('/:topicId', authMiddleware, (req, res) => controller.update(req, res));
+router.delete('/:topicId', authMiddleware, (req, res) => controller.remove(req, res));
+
 
 
 

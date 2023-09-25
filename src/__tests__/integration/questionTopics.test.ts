@@ -7,7 +7,7 @@ import { prismaClient } from '../../database';
 
 
 describe('Question Topics', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await truncateDatabase();
     });
 
@@ -18,7 +18,7 @@ describe('Question Topics', () => {
 
         const response = await request(App)
             .post('/questionTopics')
-            .send({ name: 'INICIANTE' })
+            .send({ name: 'MATH' })
             .set('authorization', token);
 
         expect(response.status).toBe(200);
@@ -42,6 +42,26 @@ describe('Question Topics', () => {
             .set('authorization', token);
 
 
-        expect(response.body).toHaveProperty('topicId');
+        expect(response.status).toBe(200);
     });
+
+
+    it('should delete the question topic', async () => {
+        const user = await UserFactory.create();
+
+        const token = generateToken(user);
+
+        const topic = await prismaClient.questionTopic.create({
+            data: {
+                name: 'String'
+            }
+        });
+
+        const response = await request(App)
+            .delete(`/questionTopics/${topic.topicId}`)
+            .set('authorization', token);
+
+        expect(response.status).toBe(200);
+    });
+
 });

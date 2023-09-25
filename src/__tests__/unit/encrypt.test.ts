@@ -6,7 +6,7 @@ import { truncateDatabase } from '../utils/truncate';
 
 
 describe('User', () => {
-    beforeAll(async () => {
+    beforeEach(async () => {
         await truncateDatabase();
     });
     

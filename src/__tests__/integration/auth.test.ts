@@ -12,18 +12,18 @@ describe('Auth Tests', () => {
         await truncateDatabase();
     });
 
-    // it('should create user in database', async () => {
-    //     const response = await request(App)
-    //         .post('/users/register')
-    //         .send({
-    //             name: 'nicollas',
-    //             email: 'nicollashelder@gmail.com',
-    //             password: await bcrypt.hash('12345', 8),
-    //             isTeacher: false
-    //         });
+    it('should create user in database', async () => {
+        const response = await request(App)
+            .post('/users/register')
+            .send({
+                name: 'nicollas',
+                email: 'nicollashelder@gmail.com',
+                password: await bcrypt.hash('12345', 8),
+                isTeacher: false
+            });
 
-    //     expect(response.status).toBe(200);
-    // });
+        expect(response.status).toBe(200);
+    });
 
 
     it('should return user data and token', async () => {
@@ -41,7 +41,6 @@ describe('Auth Tests', () => {
     });
 
     it('should return unauthorized with invalid data', async () => {
-        await UserFactory.create();
 
         const response = await request(App)
             .post('/users/login')

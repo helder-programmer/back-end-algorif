@@ -1,15 +1,12 @@
-import { Request, Response } from 'express';
+import { IQuestionDifficultyRepository } from "../repositories/types/IQuestionDifficultyRepository";
+import { Request, Response } from "express";
 
-import { IQuestionTopicRepository } from "../repositories/types/IQuestionTopicRepository";
-
-export class QuestionTopicController {
+export class QuestionDifficultyController {
     constructor(
-        private repository: IQuestionTopicRepository
+        private repository: IQuestionDifficultyRepository
     ) {
         this.repository = repository;
     }
-
-
 
     public async create(req: Request, res: Response) {
         const { name } = req.body;
@@ -22,21 +19,22 @@ export class QuestionTopicController {
 
     public async update(req: Request, res: Response) {
         const { name } = req.body;
-        const { topicId } = req.params;
+        const { difficultyId } = req.params;
 
 
-        const topic = await this.repository.update({ topicId, name });
+        const topic = await this.repository.update({ difficultyId, name });
 
         return res.status(200).json(topic);
     }
 
 
     public async remove(req: Request, res: Response) {
-        const { topicId } = req.params;
+        const { difficultyId } = req.params;
 
-        await this.repository.remove({ topicId });
+        await this.repository.remove({ difficultyId });
 
         return res.status(200).json({ message: 'Topic succesfully removed' });
     }
+
 
 }
