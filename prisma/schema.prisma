@@ -119,7 +119,7 @@ model Submission {
     createdAt     DateTime @default(now()) @map("created_at")
 
     user     User     @relation(fields: [userId_], references: [userId], onDelete: Cascade)
-    question Question @relation(fields: [questionId_], references: [questionId])
+    question Question @relation(fields: [questionId_], references: [questionId], onDelete: Cascade)
 
     @@id([userId_, questionId_])
     @@map("tb_submissions")

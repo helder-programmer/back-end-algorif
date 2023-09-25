@@ -6,6 +6,7 @@ import cors from 'cors';
 import { errorMiddleware } from './middlewares/error';
 import usersRouter from './routes/users';
 import questionTopicsRouter from './routes/questionTopics';
+import questionDifficultiesRouter from './routes/questionDifficulties';
 dotEnv.config();
 
 class App {
@@ -27,6 +28,7 @@ class App {
     private routes() {
         this.express.use('/users', usersRouter);
         this.express.use('/questionTopics', questionTopicsRouter);
+        this.express.use('/questionDifficulties', questionDifficultiesRouter);
     }
 
     private errorHandlers() {

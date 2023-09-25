@@ -11,9 +11,9 @@ export class QuestionDifficultyController {
     public async create(req: Request, res: Response) {
         const { name } = req.body;
 
-        const topic = await this.repository.create({ name });
+        const questionDifficulty = await this.repository.create({ name });
 
-        return res.status(200).json(topic);
+        return res.status(200).json(questionDifficulty);
     }
 
 
@@ -22,9 +22,9 @@ export class QuestionDifficultyController {
         const { difficultyId } = req.params;
 
 
-        const topic = await this.repository.update({ difficultyId, name });
+        const questionDifficulty = await this.repository.update({ difficultyId, name });
 
-        return res.status(200).json(topic);
+        return res.status(200).json(questionDifficulty);
     }
 
 
@@ -33,8 +33,6 @@ export class QuestionDifficultyController {
 
         await this.repository.remove({ difficultyId });
 
-        return res.status(200).json({ message: 'Topic succesfully removed' });
+        return res.status(200).json({ message: 'difficulty succesfully removed' });
     }
-
-
 }

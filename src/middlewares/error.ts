@@ -9,7 +9,6 @@ const errorMiddleware = (
     res: Response,
     next: NextFunction
 ) => {
-    console.log(error);
     const statusCode = error.statusCode ?? 500;
     const message = error.message ? error.message : 'Internal server error!';
     return res.status(statusCode).json({ message });

@@ -1,5 +1,6 @@
 import request from 'supertest';
 import bcrypt from 'bcrypt';
+import { faker } from '@faker-js/faker';
 
 import App from '../../app';
 import { truncateDatabase } from '../utils/truncate';
@@ -16,8 +17,8 @@ describe('Auth Tests', () => {
         const response = await request(App)
             .post('/users/register')
             .send({
-                name: 'nicollas',
-                email: 'nicollashelder@gmail.com',
+                name: faker.internet.userName(),
+                email: faker.internet.email(),
                 password: await bcrypt.hash('12345', 8),
                 isTeacher: false
             });
@@ -27,13 +28,13 @@ describe('Auth Tests', () => {
 
 
     it('should return user data and token', async () => {
-        await UserFactory.create();
+        const user = await UserFactory.create();
 
 
         const response = await request(App)
             .post('/users/login')
             .send({
-                email: 'nicollashelder@gmail.com',
+                email: user.email,
                 password: '12345'
             });
 
@@ -55,7 +56,7 @@ describe('Auth Tests', () => {
 
     it('should not be able to access private routes without token', async () => {
         const response = await request(App)
-            .get('/users/recoverUserInformations')
+            .get('/users/recoverUserInformations');
 
         expect(response.status).toBe(401);
     });
