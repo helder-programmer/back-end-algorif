@@ -31,4 +31,10 @@ export class QuestionTopicRepository implements IQuestionTopicRepository {
     public async remove({ topicId }: IDeleteQuestionTopicDTO) {
         await prismaClient.questionTopic.delete({ where: { topicId } })
     }
+
+
+    public async findAll() {
+        const topics = await prismaClient.questionTopic.findMany({});
+        return topics;
+    }
 }

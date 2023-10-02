@@ -39,4 +39,9 @@ export class QuestionTopicController {
         return res.status(200).json({ message: 'Topic succesfully removed' });
     }
 
+    public async getAll(req: Request, res: Response) {
+        const topics = await this.repository.findAll();
+        return res.status(200).json(topics);
+    }
+
 }

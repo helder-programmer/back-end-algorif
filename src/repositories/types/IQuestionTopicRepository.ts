@@ -7,4 +7,5 @@ export interface IQuestionTopicRepository {
     create(data: ICreateQuestionTopicDTO): Promise<QuestionTopic>;
     update(data: IUpdateQuestionTopicDTO): Promise<QuestionTopic>;
     remove(data: IDeleteQuestionTopicDTO): Promise<void>;
+    findAll(): Promise<QuestionTopic[]>;
 }
