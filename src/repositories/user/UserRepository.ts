@@ -5,6 +5,7 @@ import { ICreateUserDTO } from "./dtos/ICreateUserDTO";
 import { prismaClient } from "../../database";
 import { IFindByEmailDTO } from './dtos/IFindByEmail';
 import { IFindByIdDTO } from './dtos/IFindByIdDTO';
+import { IUpdateUserDTO } from './dtos/IUpdateUserDTO';
 
 export class UserRepository implements IUserRepository {
 
@@ -38,6 +39,21 @@ export class UserRepository implements IUserRepository {
 
     async findById({ userId }: IFindByIdDTO) {
         const user = await prismaClient.user.findFirst({ where: { userId } });
+        return user;
+    }
+
+
+    public async update({ email, name, city, phone, state, userId }: IUpdateUserDTO) {
+        const user = await prismaClient.user.update({
+            data: {
+                name,
+                email,
+                city,
+                phone,
+                state
+            }, where: { userId }
+        });
+
         return user;
     }
 }
