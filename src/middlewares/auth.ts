@@ -16,9 +16,8 @@ export const authMiddleware = (
 
     jwt.verify(token, process.env.TOKEN_SECRET_KEY!, (err, decoded: any) => {
         if (err) return res.status(401).json({ message: 'Unauthorized: Invalid token!' });
-    
 
-        repository.findById(decoded.userId).then(user => {
+        repository.findById({userId: decoded.userId}).then(user => {
             req.user = user;
             next();
         });
