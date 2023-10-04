@@ -31,4 +31,10 @@ export class QuestionDifficultyRepository implements IQuestionDifficultyReposito
     public async remove({ difficultyId }: IDeleteQuestionDifficultyDTO) {
         await prismaClient.questionDifficulty.delete({ where: { difficultyId } });
     }
+
+
+    public async findAll() {
+        const difficulties = await prismaClient.questionDifficulty.findMany();
+        return difficulties;
+    }
 }

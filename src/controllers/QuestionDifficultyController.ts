@@ -35,4 +35,10 @@ export class QuestionDifficultyController {
 
         return res.status(200).json({ message: 'difficulty succesfully removed' });
     }
+
+    public async getAll(req: Request, res: Response) {
+        const difficulties = await this.repository.findAll();
+
+        res.status(200).json(difficulties);
+    }
 }

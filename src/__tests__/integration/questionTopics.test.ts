@@ -64,4 +64,16 @@ describe('Question Topics', () => {
         expect(response.status).toBe(200);
     });
 
+
+    it('should return all question topics', async () => {
+        const user = await UserFactory.create();
+
+        const token = generateToken(user);
+
+        const response = await request(App)
+            .get('/questionTopics')
+            .set('authorization', token);
+
+        expect(response.status).toBe(200);
+    });
 });

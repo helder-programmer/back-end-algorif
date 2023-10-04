@@ -7,4 +7,5 @@ export interface IQuestionDifficultyRepository {
     create(data: ICreateQuestionDifficultyDTO): Promise<QuestionDifficulty>;
     update(data: IUpdateQuestionDifficultyDTO): Promise<QuestionDifficulty>;
     remove(data: IDeleteQuestionDifficultyDTO): Promise<void>;
+    findAll(): Promise<QuestionDifficulty[]>;
 }

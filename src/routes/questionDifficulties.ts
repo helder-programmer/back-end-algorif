@@ -12,6 +12,7 @@ const controller = new QuestionDifficultyController(repository);
 router.post('/', authMiddleware, (req, res) => controller.create(req, res));
 router.put('/:difficultyId', authMiddleware, (req, res) => controller.update(req, res));
 router.delete('/:difficultyId', authMiddleware, (req, res) => controller.remove(req, res));
+router.get('/', authMiddleware, (req, res) => controller.getAll(req, res));
 
 
 
