@@ -1,6 +1,7 @@
 import { prismaClient } from "../../database";
 import { IQuestionRepository } from "../types/IQuestionRepository";
 import { ICreateQuestionDTO } from "./dtos/ICreateQuestionDTO";
+import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
 import { IFindUnansweredQuestionsDTO } from "./dtos/IFindUnansweredQuestionsDTO";
 
 export class QuestionRepository implements IQuestionRepository {
@@ -52,5 +53,21 @@ export class QuestionRepository implements IQuestionRepository {
         });
 
         return unansweredQuestions;
+    }
+
+
+    public async findById({ questionId }: IFindByIdDTO) {
+        const searchedQuestion = await prismaClient.question.findFirst({
+            where: {
+                questionId
+            },
+            include: {
+                tests: true
+            }
+        });
+
+        console.log(searchedQuestion);
+
+        return searchedQuestion;
     }
 }
