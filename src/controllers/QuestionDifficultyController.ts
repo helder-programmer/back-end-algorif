@@ -9,9 +9,7 @@ export class QuestionDifficultyController {
     }
 
     public async create(req: Request, res: Response) {
-        const { name } = req.body;
-
-        const questionDifficulty = await this.repository.create({ name });
+        const questionDifficulty = await this.repository.create(req.body);
 
         return res.status(200).json(questionDifficulty);
     }

@@ -12,10 +12,7 @@ export class QuestionTopicController {
 
 
     public async create(req: Request, res: Response) {
-        const { name } = req.body;
-
-        const topic = await this.repository.create({ name });
-
+        const topic = await this.repository.create(req.body);
         return res.status(200).json(topic);
     }
 

@@ -7,4 +7,5 @@ export interface ICreateQuestionDTO {
     difficultyId: string;
     userCreatorId: string;
     classId?: string;
+    tests: { input: string, output: string }[];
 }

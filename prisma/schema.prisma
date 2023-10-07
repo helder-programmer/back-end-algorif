@@ -34,8 +34,8 @@ model User {
 
     class Class? @relation(fields: [classId], references: [classId])
 
-    submissions_       Submission[]
-    created_questions_ Question[]
+    submissions      Submission[]
+    createdQuestions Question[]
 
     @@map("tb_users")
 }
@@ -105,15 +105,15 @@ model Question {
     userCreator User               @relation(fields: [userCreatorId], references: [userId])
     difficulty  QuestionDifficulty @relation(fields: [difficultyId], references: [difficultyId])
 
-    submissions_ Submission[]
-    tests        QuestionTest[]
+    submissions Submission[]
+    tests       QuestionTest[]
 
     @@map("tb_questions")
 }
 
 model Submission {
-    userId        String
-    questionId    String
+    userId        String @map("user_id")
+    questionId    String @map("question_id")
     code          String
     isCorrectCode Boolean  @map("is_correct_code")
     createdAt     DateTime @default(now()) @map("created_at")

@@ -15,20 +15,12 @@ export class UserController {
 
 
     public async register(req: Request, res: Response) {
-        const { email, name, password, isTeacher, city, phone, state } = req.body;
+        const { password } = req.body;
         const hashedPassword = await bcrypt.hash(password, 8);
 
+        const data = { ...req.body, password: hashedPassword };
 
-        const user = await this.repository.create({
-            name,
-            email,
-            password: hashedPassword,
-            isTeacher,
-            city,
-            phone,
-            state
-        });
-
+        const user = await this.repository.create(data);
         return res.status(200).json(user);
     }
 
@@ -59,17 +51,11 @@ export class UserController {
 
 
     public async update(req: Request, res: Response) {
-        const { email, name, city, phone, state } = req.body;
         const userId = req.user!.userId;
+        
+        const data = { ...req.body, userId };
 
-        const updatedUser = await this.repository.update({
-            name,
-            email,
-            city,
-            phone,
-            state,
-            userId
-        });
+        const updatedUser = await this.repository.update(data);
 
         return res.status(200).json(updatedUser);
     }
