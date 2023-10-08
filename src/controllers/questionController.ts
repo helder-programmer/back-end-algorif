@@ -31,12 +31,24 @@ export class QuestionController {
 
     public async getOne(req: Request, res: Response) {
         const { questionId } = req.params;
-        console.log(questionId);
+        
         const searchedQuestion = await this.repository.findById({ questionId });
 
         if (!searchedQuestion) throw new NotFoundError('Question not found!');
 
         return res.status(200).json(searchedQuestion);
+    }
+
+    public async answerQuestion(req: Request, res: Response) {
+        const userId = req.user!.userId;
+        const data = { ...req.body, ...req.params, userId };
+
+        const submission = await this.repository.answerQuestion(data);
+
+        if (!submission) return res.status(200).json({ message: 'This submission already exists' });
+
+
+        return res.status(200).json(submission);
     }
 
 

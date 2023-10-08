@@ -1,5 +1,7 @@
+import { Submission } from "@prisma/client";
 import { prismaClient } from "../../database";
 import { IQuestionRepository } from "../types/IQuestionRepository";
+import { IAnswerQuestionDTO } from "./dtos/IAnswerQuestionDTO";
 import { ICreateQuestionDTO } from "./dtos/ICreateQuestionDTO";
 import { IFindByIdDTO } from "./dtos/IFindByIdDTO";
 import { IFindUnansweredQuestionsDTO } from "./dtos/IFindUnansweredQuestionsDTO";
@@ -42,7 +44,7 @@ export class QuestionRepository implements IQuestionRepository {
         const unansweredQuestions = await prismaClient.question.findMany({
             where: {
                 submissions: {
-                    some: {
+                    every: {
                         userId: { not: userId }
                     }
                 }
@@ -66,8 +68,47 @@ export class QuestionRepository implements IQuestionRepository {
             }
         });
 
-        console.log(searchedQuestion);
-
         return searchedQuestion;
     }
+
+
+    public async answerQuestion({ userId, questionId, isCorrectCode, code }: IAnswerQuestionDTO) {
+        let submission = null;
+
+        const verifyIfExistsCorrectSubmissionForQuestion = await prismaClient.submission.findFirst({
+            where: {
+                userId,
+                questionId
+            }
+        });
+
+
+        if (!verifyIfExistsCorrectSubmissionForQuestion) {
+            submission = await prismaClient.submission.create({
+                data: {
+                    userId,
+                    questionId,
+                    code,
+                    isCorrectCode
+                }
+            });
+
+            const user = await prismaClient.user.findFirst({ where: { userId } });
+            let score = Number(user!.score);
+
+            await prismaClient.user.update({
+                data: {
+                    score: score + 1,
+                },
+                where: {
+                    userId
+                }
+            });
+        }
+
+        return submission;
+    }
+
+
+
 }

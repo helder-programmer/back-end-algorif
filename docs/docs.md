@@ -21,6 +21,7 @@
 tests:
     Create Question;
     FindUnansweredQuestions;
-    FindById.
+    FindById;
+    answerQuestion
 
 
